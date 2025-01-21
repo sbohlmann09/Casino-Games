@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("Starting Main Menu");
     }
 
     // Update is called once per frame
@@ -19,16 +19,20 @@ public class MainMenu : MonoBehaviour
 
     public void ToBlackjack()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        // SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Blackjack");
+        Debug.Log("ToBlackjack");
     }
 
     public void ToBaccarat()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+        SceneManager.LoadScene("Baccarat");
+        // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
     }
 
     public void To3CardPoker()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 3);
+        SceneManager.LoadScene("3CardPoker");
+        // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 3);
     }
 }
