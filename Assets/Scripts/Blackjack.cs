@@ -11,14 +11,29 @@ public class Blackjack : MonoBehaviour
     public static string[] suits = new string[] { "C", "D", "H", "S" };
     public static string[] values = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
+    public GameObject[] allSpots;
+    public List<string> spot1 = new List<string>();
+    public List<string> spot2 = new List<string>();
+    public List<string> spot3 = new List<string>();
+    public List<string> spot4 = new List<string>();
+    public List<string> spot5 = new List<string>();
+    public List<string> spot6 = new List<string>();
+    public List<string> spot7 = new List<string>();
+    public List<string> dealer = new List<string>();
+    
+    public List<string> discardPile = new List<string>();
+
+    private int round = 0;
     public void StartGame()
     {
         deck = GenerateDeck(deckSize);
         Shuffle(deck);
-        for (int i = 0; i < deck.Count; i++)
-        {
-            Debug.Log($"Card {i + 1}: {deck[i]}");
-        }
+        Deal();
+        // for (int i = 0; i < deck.Count; i++)
+        // {
+        //     Debug.Log($"Card {i + 1}: {deck[i]}");
+        // }
+        
     }
 
     public void SetDeckSize(int deck){
@@ -59,6 +74,43 @@ public class Blackjack : MonoBehaviour
             list[k] = list[n];
             list[n] = temp;
         }
+    }
+
+
+    public void Deal()
+    {
+        if (round== 0){//At the beginning of the shoe, the dealer will discard the first card
+            Debug.Log("Dealing the first round");
+            Debug.Log("Discarding first card: " + deck[0]);
+            string discardedCard = deck[0];
+            deck.RemoveAt(0);
+            discardPile.Add(discardedCard);
+            Debug.Log("Checking the discard pile: " + discardPile[0]);
+            Debug.Log("Checking the deck: " + deck[0]);
+
+        }
+        foreach (var spot in allSpots)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+            // Deal to spot
+            string card = deck[0];
+            spot.GetComponent<Spot>().AddCard(card);
+            deck.RemoveAt(0);
+            GameObject newCard = Instantiate(cardPrefab, spot.transform);
+            newCard.GetComponent<SpriteRenderer>().sprite = GetCardSprite(card);
+            }
+        }
+
+        // // Deal to dealer
+        // for (int i = 0; i < 2; i++)
+        // {
+        //     string card = deck[0];
+        //     dealer.Add(card);
+        //     deck.RemoveAt(0);
+        //     GameObject newCard = Instantiate(cardPrefab, allSpots[0].transform);
+        //     newCard.GetComponent<SpriteRenderer>().sprite = GetCardSprite(card);
+        // }
     }
 
 }
