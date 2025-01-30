@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Blackjack : MonoBehaviour
 {
@@ -12,27 +13,38 @@ public class Blackjack : MonoBehaviour
     public static string[] values = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
     public GameObject[] allSpots;
-    public List<string> spot1 = new List<string>();
-    public List<string> spot2 = new List<string>();
-    public List<string> spot3 = new List<string>();
-    public List<string> spot4 = new List<string>();
-    public List<string> spot5 = new List<string>();
-    public List<string> spot6 = new List<string>();
-    public List<string> spot7 = new List<string>();
+    public GameObject DealerSpot;
+    public List<string>[] playedHands;
+    private List<string> spot1 = new List<string>();
+    private List<string> spot2 = new List<string>();
+    private List<string> spot3 = new List<string>();
+    private List<string> spot4 = new List<string>();
+    private List<string> spot5 = new List<string>();
+    private List<string> spot6 = new List<string>();
+    private List<string> spot7 = new List<string>();
     public List<string> dealer = new List<string>();
     
     public List<string> discardPile = new List<string>();
 
     private int round = 0;
+
+    void Start()
+    {
+        playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,spot7,dealer};
+        StartGame();
+    }
+
     public void StartGame()
     {
         deck = GenerateDeck(deckSize);
         Shuffle(deck);
-        Deal();
-        // for (int i = 0; i < deck.Count; i++)
+        // foreach (string card in deck)
         // {
-        //     Debug.Log($"Card {i + 1}: {deck[i]}");
+        //     print(card);
         // }
+        BJDeal();
+        Deal();
+        
         
     }
 
@@ -79,38 +91,62 @@ public class Blackjack : MonoBehaviour
 
     public void Deal()
     {
-        if (round== 0){//At the beginning of the shoe, the dealer will discard the first card
-            Debug.Log("Dealing the first round");
-            Debug.Log("Discarding first card: " + deck[0]);
-            string discardedCard = deck[0];
-            deck.RemoveAt(0);
-            discardPile.Add(discardedCard);
-            Debug.Log("Checking the discard pile: " + discardPile[0]);
-            Debug.Log("Checking the deck: " + deck[0]);
-
-        }
-        foreach (var spot in allSpots)
+        for (int i = 0; i < playedHands.Length; i++)
         {
-            for (int i = 0; i < 2; i++)
+            float xyOffset = 0;
+            float zOffset = 0.03f;
+            foreach (string card in playedHands[i])
             {
-            // Deal to spot
-            string card = deck[0];
-            spot.GetComponent<Spot>().AddCard(card);
-            deck.RemoveAt(0);
-            GameObject newCard = Instantiate(cardPrefab, spot.transform);
-            newCard.GetComponent<SpriteRenderer>().sprite = GetCardSprite(card);
+            GameObject newCard = Instantiate(cardPrefab, new Vector3
+            (allSpots[i].transform.position.x + xyOffset, allSpots[i].transform.position.y + xyOffset, allSpots[i].transform.position.z - zOffset), 
+            Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
+
+            newCard.name = card;
+            newCard.GetComponent<Selectable>().faceUp = true;
+            print(newCard.name + " At position: " + i);
+            xyOffset += 0.3f;
+            zOffset += 0.03f;
+
+            // Instantiate a new card at each playedHands[] before the 2nd new card
+            // if (playedHands[i].IndexOf(card) == 0)
+            // {
+            //     GameObject secondCard = Instantiate(cardPrefab, new Vector3
+            //     (allSpots[i].transform.position.x + xyOffset, allSpots[i].transform.position.y + xyOffset, allSpots[i].transform.position.z - zOffset), 
+            //     Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
+
+            //     secondCard.name = card;
+            //     secondCard.GetComponent<Selectable>().faceUp = true;
+            //     print(secondCard.name + " At position: " + i);
+            //     xyOffset += 0.3f;
+            //     zOffset += 0.03f;
+            // }
             }
         }
 
-        // // Deal to dealer
-        // for (int i = 0; i < 2; i++)
-        // {
-        //     string card = deck[0];
-        //     dealer.Add(card);
+
+        //This works
+        // if (round== 0){//At the beginning of the shoe, the dealer will discard the first card
+        //     Debug.Log("Dealing the first round");
+        //     Debug.Log("Discarding first card: " + deck[0]);
+        //     string discardedCard = deck[0];
         //     deck.RemoveAt(0);
-        //     GameObject newCard = Instantiate(cardPrefab, allSpots[0].transform);
-        //     newCard.GetComponent<SpriteRenderer>().sprite = GetCardSprite(card);
+        //     discardPile.Add(discardedCard);
+        //     Debug.Log("Checking the discard pile: " + discardPile[0]);
+        //     Debug.Log("Checking the deck: " + deck[0]);
+
         // }
+        
+        
     }
 
+    void BJDeal(){
+        for(int i = 0; i < 2; i++){
+            // foreach (int bjc in playedHands.Count)
+            for (int j = 0; j < playedHands.Length; j++)
+            {
+                playedHands[j].Add(deck.First<string>()); 
+                deck.RemoveAt(0);
+            }
+        }
+    }
 }

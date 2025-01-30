@@ -9,8 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Blackjack.unity
+    path: Assets/Scenes/BJRules.unity
     guid: 0915a78002465d94ab623d11fa42a6bf
+  - enabled: 1
+    path: Assets/Scenes/Blackjack.unity
+    guid: 5e095f55dbb43ea45b2c4a75e006fde6
   - enabled: 1
     path: Assets/Scenes/Baccarat.unity
     guid: ab9cb5f411d28e7438ec497f5c9d56a8

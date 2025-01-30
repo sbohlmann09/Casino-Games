@@ -16,7 +16,12 @@ public class MainMenu : MonoBehaviour
     {
         
     }
-
+    public void ToBJRules()
+    {
+        // SceneManager.LoadScene(1);
+        SceneManager.LoadScene("BJRules");
+        Debug.Log("ToBlackjack");
+    }
     public void ToBlackjack()
     {
         // SceneManager.LoadScene(1);
