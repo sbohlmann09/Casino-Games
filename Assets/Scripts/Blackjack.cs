@@ -27,10 +27,26 @@ public class Blackjack : MonoBehaviour
     public List<string> discardPile = new List<string>();
 
     private int round = 0;
+    private int activeHands = 2;
 
     void Start()
-    {
-        playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,spot7,dealer};
+    {   
+        if(activeHands == 1)
+            playedHands = new List<string>[]{spot1,dealer};
+        else if(activeHands == 2)
+            playedHands = new List<string>[]{spot1,spot2,dealer};
+        else if(activeHands == 3)
+            playedHands = new List<string>[]{spot1,spot2,spot3,dealer};
+        else if(activeHands == 4)
+            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,dealer};
+        else if(activeHands == 5)
+            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,dealer};
+        else if(activeHands == 6)
+            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,dealer};
+        else if(activeHands == 7)    
+            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,spot7,dealer};
+        
+        
         StartGame();
     }
 
@@ -91,37 +107,24 @@ public class Blackjack : MonoBehaviour
 
     public void Deal()
     {
-        for (int i = 0; i < playedHands.Length; i++)
-        {
-            float xyOffset = 0;
-            float zOffset = 0.03f;
-            foreach (string card in playedHands[i])
+        for (int round = 0; round < 2; round++) // Loop twice to deal two rounds of cards
+        {  
+            for (int i = 0; i < playedHands.Length; i++)
             {
-            GameObject newCard = Instantiate(cardPrefab, new Vector3
-            (allSpots[i].transform.position.x + xyOffset, allSpots[i].transform.position.y + xyOffset, allSpots[i].transform.position.z - zOffset), 
-            Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
+                float xOffset = 0.3f * round;
+                float zOffset = 0.03f * (round + 1);
+                string card = playedHands[i][round]; // Access the specific card from the array
+                
+                GameObject newCard = Instantiate(cardPrefab, new Vector3
+                (allSpots[i].transform.position.x + xOffset - 0.15f, allSpots[i].transform.position.y, allSpots[i].transform.position.z - zOffset), 
+                Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
 
-            newCard.name = card;
-            newCard.GetComponent<Selectable>().faceUp = true;
-            print(newCard.name + " At position: " + i);
-            xyOffset += 0.3f;
-            zOffset += 0.03f;
-
-            // Instantiate a new card at each playedHands[] before the 2nd new card
-            // if (playedHands[i].IndexOf(card) == 0)
-            // {
-            //     GameObject secondCard = Instantiate(cardPrefab, new Vector3
-            //     (allSpots[i].transform.position.x + xyOffset, allSpots[i].transform.position.y + xyOffset, allSpots[i].transform.position.z - zOffset), 
-            //     Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
-
-            //     secondCard.name = card;
-            //     secondCard.GetComponent<Selectable>().faceUp = true;
-            //     print(secondCard.name + " At position: " + i);
-            //     xyOffset += 0.3f;
-            //     zOffset += 0.03f;
-            // }
+                newCard.name = card;
+                newCard.GetComponent<Selectable>().faceUp = true;
+                print(newCard.name + " At position: " + i);
             }
         }
+        
 
 
         //This works
