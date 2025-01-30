@@ -26,8 +26,8 @@ public class Blackjack : MonoBehaviour
     
     public List<string> discardPile = new List<string>();
 
-    private int round = 0;
-    private int activeHands = 2;
+    private int roundsPlayed = 0;
+    public int activeHands;
 
     void Start()
     {   
@@ -111,17 +111,34 @@ public class Blackjack : MonoBehaviour
         {  
             for (int i = 0; i < playedHands.Length; i++)
             {
-                float xOffset = 0.3f * round;
+                float xOffset = 0.9f * round;
                 float zOffset = 0.03f * (round + 1);
                 string card = playedHands[i][round]; // Access the specific card from the array
                 
-                GameObject newCard = Instantiate(cardPrefab, new Vector3
-                (allSpots[i].transform.position.x + xOffset - 0.15f, allSpots[i].transform.position.y, allSpots[i].transform.position.z - zOffset), 
-                Quaternion.Euler(0, 0, allSpots[i].transform.rotation.eulerAngles.z), allSpots[i].transform);
+                GameObject newCard;
+                if (playedHands[i] == dealer)
+                {
+                    // Handle dealer's card differently
+                    Debug.Log("Dealing to dealer: " + card);
+                    newCard = Instantiate(cardPrefab, new Vector3
+                    (DealerSpot.transform.position.x, DealerSpot.transform.position.y, DealerSpot.transform.position.z - zOffset), 
+                    Quaternion.identity, DealerSpot.transform);
+                    if(round == 0)
+                        newCard.GetComponent<Selectable>().faceUp = false;
+                    else
+                        newCard.GetComponent<Selectable>().faceUp = true;
+                    newCard.name = card;
+                }
+                else
+                {
+                    newCard = Instantiate(cardPrefab, allSpots[i].transform);
+                    newCard.transform.localPosition = new Vector3(xOffset - 0.45f, 0, -zOffset);
+                    newCard.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    newCard.name = card;
+                    newCard.GetComponent<Selectable>().faceUp = true;
+                }
 
-                newCard.name = card;
-                newCard.GetComponent<Selectable>().faceUp = true;
-                print(newCard.name + " At position: " + i);
+                // print(newCard.name + " At position: " + i);
             }
         }
         
