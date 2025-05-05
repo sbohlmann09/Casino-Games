@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class Blackjack : MonoBehaviour
@@ -11,10 +12,11 @@ public class Blackjack : MonoBehaviour
     public List<string> deck;
     public static string[] suits = new string[] { "C", "D", "H", "S" };
     public static string[] values = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
-
+    public bool doneWithRules = false;
     public GameObject[] allSpots;
     public GameObject DealerSpot;
     public List<string>[] playedHands;
+    public Slider slider;
     private List<string> spot1 = new List<string>();
     private List<string> spot2 = new List<string>();
     private List<string> spot3 = new List<string>();
@@ -27,31 +29,50 @@ public class Blackjack : MonoBehaviour
     public List<string> discardPile = new List<string>();
 
     private int roundsPlayed = 0;
-    public int activeHands;
+    private int activeHands;
+    public static int sliderValue;
 
     void Start()
-    {   
-        if(activeHands == 1)
-            playedHands = new List<string>[]{spot1,dealer};
-        else if(activeHands == 2)
-            playedHands = new List<string>[]{spot1,spot2,dealer};
-        else if(activeHands == 3)
-            playedHands = new List<string>[]{spot1,spot2,spot3,dealer};
-        else if(activeHands == 4)
-            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,dealer};
-        else if(activeHands == 5)
-            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,dealer};
-        else if(activeHands == 6)
-            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,dealer};
-        else if(activeHands == 7)    
-            playedHands = new List<string>[]{spot1,spot2,spot3,spot4,spot5,spot6,spot7,dealer};
-        
-        
-        StartGame();
+    {
+        activeHands = sliderValue; // Initialize activeHands with the slider value
+        if (doneWithRules)
+        {
+            print("post Skip: " + activeHands);
+            if (activeHands == 1)
+                playedHands = new List<string>[] { spot1, dealer };
+            else if (activeHands == 2)
+                playedHands = new List<string>[] { spot1, spot2, dealer };
+            else if (activeHands == 3)
+                playedHands = new List<string>[] { spot1, spot2, spot3, dealer };
+            else if (activeHands == 4)
+                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, dealer };
+            else if (activeHands == 5)
+                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, dealer };
+            else if (activeHands == 6)
+                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, dealer };
+            else if (activeHands == 7)
+                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, spot7, dealer };
+            StartGame();
+            doneWithRules = false;
+        }
+    }
+
+    void Update()
+    {
+        sliderValue = (int)GetSlider(); // Store the slider value in a static variable
+    }
+    
+
+    public void EndRules()
+    {
+        print(doneWithRules);
+        doneWithRules = true;
+        print("After: " + doneWithRules);
     }
 
     public void StartGame()
     {
+        print("Game has started");
         deck = GenerateDeck(deckSize);
         Shuffle(deck);
         // foreach (string card in deck)
@@ -59,10 +80,24 @@ public class Blackjack : MonoBehaviour
         //     print(card);
         // }
         BJDeal();
-        Deal();
-        
+        Deal();        
+    }
+
+    public float GetSlider(){
+        // print("slider value: "+slider.value);
+        if(doneWithRules)
+            return slider.value;
+        else
+            return 0;
         
     }
+
+    public void SetActiveHands()
+    {
+        activeHands = sliderValue;
+        print("Pre Skip: " + activeHands);
+    }
+
 
     public void SetDeckSize(int deck){
         deckSize = deck;
