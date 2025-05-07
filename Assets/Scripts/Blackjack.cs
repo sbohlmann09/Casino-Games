@@ -14,6 +14,13 @@ public class Blackjack : MonoBehaviour
     public static string[] values = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
     public bool doneWithRules = false;
     public GameObject[] allSpots;
+    public GameObject Spot0;
+    public GameObject Spot1;
+    public GameObject Spot2;
+    public GameObject Spot3;
+    public GameObject Spot4;
+    public GameObject Spot5;
+    public GameObject Spot6;
     public GameObject DealerSpot;
     public List<string>[] playedHands;
     public Slider slider;
@@ -38,20 +45,34 @@ public class Blackjack : MonoBehaviour
         if (doneWithRules)
         {
             print("post Skip: " + activeHands);
-            if (activeHands == 1)
-                playedHands = new List<string>[] { spot1, dealer };
-            else if (activeHands == 2)
-                playedHands = new List<string>[] { spot1, spot2, dealer };
-            else if (activeHands == 3)
-                playedHands = new List<string>[] { spot1, spot2, spot3, dealer };
-            else if (activeHands == 4)
-                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, dealer };
-            else if (activeHands == 5)
-                playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, dealer };
-            else if (activeHands == 6)
+            if (activeHands == 1){
+                playedHands = new List<string>[] { spot4, dealer };
+                allSpots = new GameObject[] { Spot3, DealerSpot };
+            }
+            else if (activeHands == 2){
+                playedHands = new List<string>[] { spot3, spot4, dealer };
+                allSpots = new GameObject[] { Spot2, Spot3, DealerSpot };
+            }
+            else if (activeHands == 3){
+                playedHands = new List<string>[] { spot3, spot4, spot5, dealer };
+                allSpots = new GameObject[] { Spot2, Spot3, Spot4, DealerSpot };
+            }
+            else if (activeHands == 4){
+                playedHands = new List<string>[] { spot2, spot3, spot4, spot5, dealer };
+                allSpots = new GameObject[] { Spot1, Spot2, Spot3, Spot4, DealerSpot };
+            }
+            else if (activeHands == 5){
+                playedHands = new List<string>[] { spot2, spot3, spot4, spot5, spot6, dealer };
+                allSpots = new GameObject[] { Spot1, Spot2, Spot3, Spot4, Spot5, DealerSpot };
+            }
+            else if (activeHands == 6){
                 playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, dealer };
-            else if (activeHands == 7)
+                allSpots = new GameObject[] { Spot0, Spot1, Spot2, Spot3, Spot4, Spot5, DealerSpot };
+            }
+            else if (activeHands == 7){
                 playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, spot7, dealer };
+                allSpots = new GameObject[] { Spot0, Spot1, Spot2, Spot3, Spot4, Spot5, Spot6, DealerSpot };
+            }
             StartGame();
             doneWithRules = false;
         }

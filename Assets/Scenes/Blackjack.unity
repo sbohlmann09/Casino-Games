@@ -990,19 +990,18 @@ MonoBehaviour:
   cardPrefab: {fileID: 1213797540}
   deck: []
   doneWithRules: 1
-  allSpots:
-  - {fileID: 1300745226}
-  - {fileID: 1445045063}
-  - {fileID: 6384670}
-  - {fileID: 901180542}
-  - {fileID: 1169936593}
-  - {fileID: 64665996}
-  - {fileID: 709092386}
-  - {fileID: 1794326993}
+  allSpots: []
+  Spot0: {fileID: 1300745226}
+  Spot1: {fileID: 1445045063}
+  Spot2: {fileID: 6384670}
+  Spot3: {fileID: 901180542}
+  Spot4: {fileID: 1169936593}
+  Spot5: {fileID: 64665996}
+  Spot6: {fileID: 709092386}
   DealerSpot: {fileID: 1794326993}
+  slider: {fileID: 0}
   dealer: []
   discardPile: []
-  activeHands: 1
 --- !u!4 &1542680695
 Transform:
   m_ObjectHideFlags: 0
