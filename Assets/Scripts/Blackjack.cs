@@ -32,12 +32,18 @@ public class Blackjack : MonoBehaviour
     private List<string> spot6 = new List<string>();
     private List<string> spot7 = new List<string>();
     public List<string> dealer = new List<string>();
-    
+
+    public GameObject hitButton;
+    public GameObject standButton;
+    public GameObject doubleButton;
+    public GameObject splitButton;
+    public GameObject surrenderButton;
+
     public List<string> discardPile = new List<string>();
 
     private int roundsPlayed = 0;
     private int activeHands;
-    public static int sliderValue;
+    public static int sliderValue = 7;
 
     void Start()
     {
@@ -45,31 +51,38 @@ public class Blackjack : MonoBehaviour
         if (doneWithRules)
         {
             print("post Skip: " + activeHands);
-            if (activeHands == 1){
+            if (activeHands == 1)
+            {
                 playedHands = new List<string>[] { spot4, dealer };
                 allSpots = new GameObject[] { Spot3, DealerSpot };
             }
-            else if (activeHands == 2){
+            else if (activeHands == 2)
+            {
                 playedHands = new List<string>[] { spot3, spot4, dealer };
                 allSpots = new GameObject[] { Spot2, Spot3, DealerSpot };
             }
-            else if (activeHands == 3){
+            else if (activeHands == 3)
+            {
                 playedHands = new List<string>[] { spot3, spot4, spot5, dealer };
                 allSpots = new GameObject[] { Spot2, Spot3, Spot4, DealerSpot };
             }
-            else if (activeHands == 4){
+            else if (activeHands == 4)
+            {
                 playedHands = new List<string>[] { spot2, spot3, spot4, spot5, dealer };
                 allSpots = new GameObject[] { Spot1, Spot2, Spot3, Spot4, DealerSpot };
             }
-            else if (activeHands == 5){
+            else if (activeHands == 5)
+            {
                 playedHands = new List<string>[] { spot2, spot3, spot4, spot5, spot6, dealer };
                 allSpots = new GameObject[] { Spot1, Spot2, Spot3, Spot4, Spot5, DealerSpot };
             }
-            else if (activeHands == 6){
+            else if (activeHands == 6)
+            {
                 playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, dealer };
                 allSpots = new GameObject[] { Spot0, Spot1, Spot2, Spot3, Spot4, Spot5, DealerSpot };
             }
-            else if (activeHands == 7){
+            else if (activeHands == 7)
+            {
                 playedHands = new List<string>[] { spot1, spot2, spot3, spot4, spot5, spot6, spot7, dealer };
                 allSpots = new GameObject[] { Spot0, Spot1, Spot2, Spot3, Spot4, Spot5, Spot6, DealerSpot };
             }
@@ -82,7 +95,7 @@ public class Blackjack : MonoBehaviour
     {
         sliderValue = (int)GetSlider(); // Store the slider value in a static variable
     }
-    
+
 
     public void EndRules()
     {
@@ -101,16 +114,21 @@ public class Blackjack : MonoBehaviour
         //     print(card);
         // }
         BJDeal();
-        Deal();        
+        StartCoroutine(Deal());
+        foreach (List<string> hand in playedHands)
+        {
+            PlayerAction(hand);
+        }
     }
 
-    public float GetSlider(){
+    public float GetSlider()
+    {
         // print("slider value: "+slider.value);
-        if(doneWithRules)
+        if (doneWithRules)
             return slider.value;
         else
             return 0;
-        
+
     }
 
     public void SetActiveHands()
@@ -120,12 +138,14 @@ public class Blackjack : MonoBehaviour
     }
 
 
-    public void SetDeckSize(int deck){
+    public void SetDeckSize(int deck)
+    {
         deckSize = deck;
         Debug.Log("The deck size is: " + deckSize);
     }
 
-    public int GetDeckSize(){
+    public int GetDeckSize()
+    {
         return deckSize;
     }
 
@@ -140,9 +160,9 @@ public class Blackjack : MonoBehaviour
                 {
                     newDeck.Add(s + v);
                 }
-            }   
+            }
         }
-        
+
         return newDeck;
     }
 
@@ -161,25 +181,28 @@ public class Blackjack : MonoBehaviour
     }
 
 
-    public void Deal()
+    IEnumerator Deal()
     {
         for (int round = 0; round < 2; round++) // Loop twice to deal two rounds of cards
-        {  
+        {
             for (int i = 0; i < playedHands.Length; i++)
             {
-                float xOffset = 0.9f * round;
-                float zOffset = 0.03f * (round + 1);
-                string card = playedHands[i][round]; // Access the specific card from the array
-                
+                yield return new WaitForSeconds(0.3f);
+                float Offset = .9f * round;
+                float zOffset = 1f * (round + 1);
+                // float yOffset = (round == 0 ? 15f : -15f);
+                string card = playedHands[i][round];  // Access the specific card from the array
+
                 GameObject newCard;
                 if (playedHands[i] == dealer)
                 {
-                    // Handle dealer's card differently
+                     // Handle dealer's card differently
                     Debug.Log("Dealing to dealer: " + card);
                     newCard = Instantiate(cardPrefab, new Vector3
                     (DealerSpot.transform.position.x, DealerSpot.transform.position.y, DealerSpot.transform.position.z - zOffset), 
-                    Quaternion.identity, DealerSpot.transform);
-                    if(round == 0)
+                    Quaternion.identity, DealerSpot.transform);                    
+                    newCard.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+                    if (round == 0)
                         newCard.GetComponent<Selectable>().faceUp = false;
                     else
                         newCard.GetComponent<Selectable>().faceUp = true;
@@ -188,16 +211,30 @@ public class Blackjack : MonoBehaviour
                 else
                 {
                     newCard = Instantiate(cardPrefab, allSpots[i].transform);
-                    newCard.transform.localPosition = new Vector3(xOffset - 0.45f, 0, -zOffset);
+                    newCard.transform.localPosition = new Vector3(Offset-.45f , Offset-.45f , -zOffset);
                     newCard.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    newCard.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
                     newCard.name = card;
                     newCard.GetComponent<Selectable>().faceUp = true;
+                    if (round == 1)
+                    {
+                        // hitButton = Instantiate(hitButton, newCard.transform.position, Quaternion.identity, allSpots[i].transform);
+                        // standButton = Instantiate(standButton, newCard.transform.position, Quaternion.identity, allSpots[i].transform);
+                        // // Set scale to 3x larger
+                        // hitButton.transform.localScale = new Vector3(0.05f, 0.15f, 0.05f);
+                        // standButton.transform.localScale = new Vector3(0.05f, 0.15f, 0.05f);
+                        // // Offset buttons relative to the card's position
+                        // hitButton.transform.localPosition += new Vector3(-2.5f, -5, 0);
+                        // hitButton.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        // standButton.transform.localPosition += new Vector3(2.5f, -5, 0);
+                        // standButton.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    }
                 }
 
                 // print(newCard.name + " At position: " + i);
             }
         }
-        
+
 
 
         //This works
@@ -211,18 +248,66 @@ public class Blackjack : MonoBehaviour
         //     Debug.Log("Checking the deck: " + deck[0]);
 
         // }
-        
-        
+
+
     }
 
-    void BJDeal(){
-        for(int i = 0; i < 2; i++){
+    void BJDeal()
+    {
+        for (int i = 0; i < 2; i++)
+        {
             // foreach (int bjc in playedHands.Count)
             for (int j = 0; j < playedHands.Length; j++)
             {
-                playedHands[j].Add(deck.First<string>()); 
+                playedHands[j].Add(deck.First<string>());
                 deck.RemoveAt(0);
             }
         }
     }
+
+    public void PlayerAction(List<string> hand)
+    {
+        if (GetTotal(hand) == 21)
+        {
+            Debug.Log("Blackjack!");
+            // Add logic for winning with blackjack
+        }
+        else if (GetTotal(hand) > 21)
+        {
+            Debug.Log("Bust!");
+            // Add logic for busting
+        }
+        else
+        {  
+
+            // Player can hit, stand, double, split, or surrender
+            Debug.Log("Player's turn");
+        }
+    }
+
+    public int GetTotal(List<string> hand)
+    {
+        int total = 0;
+        foreach (string card in hand)
+        {
+            string value = card.Substring(1);
+            if (int.TryParse(value, out int numValue))
+            {
+                // Add the numeric value of the card
+                total += numValue;
+            }
+            else if (value == "A")
+            {
+                // Handle Ace as 1 or 11
+                total += (total + 11 > 21) ? 1 : 11;
+            }
+            else
+            {
+                // Handle face cards (J, Q, K) as 10
+                total += 10;
+            }
+        }
+        return total;
+    }
+
 }
